@@ -1,7 +1,6 @@
 <?php 
     if(session_status() === PHP_SESSION_NONE){
-        header("Location: ./../index.php");
-        exit();
+        session_start();
     }   
 
     if(!isset($_SESSION['error'])){
@@ -74,7 +73,7 @@
 
 <div class="card">
     <h1>⚠ Error</h1>
-    <p><?= $_GET['error'] ?></p>
+    <p><?= $_SESSION['error'] ?></p>
 
     <form action="signUP.php">
         <button type="submit">Go Back</button>

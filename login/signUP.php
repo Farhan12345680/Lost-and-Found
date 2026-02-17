@@ -1,9 +1,13 @@
 <?php
     if(session_status() === PHP_SESSION_NONE){
-        header("Location: ./../index.php");
-        exit();
-    }   
+        session_start();
 
+    }   
+    if(isset($_SESSION['gmail']) && $_SESSION['gmail']!=='none'){
+        header("Location: ./../profile/profile.php");
+        exit();
+    }
+    include_once __DIR__."/../database/create_initial_state.php";
 
 $message = "";
 $status = "";
@@ -14,26 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST['email'] ?? "");
     $password = trim($_POST['password'] ?? "");
 
-    if ($name === "" || $email === "" || $password === "") {
-        $status = "error";
-        $message = "All fields are required.";
-        $_SESSION['error']=$message;
-        header("Location: error_page.php");
-        exit();
-    } else {
-        $result = NewUser(['name'=>$name,'email'=>$email,'password'=> $password]); 
-        if ($result['status'] === "error") {
-            $status = "error";
-            $message = $result['message'];
-            header("Location: error_page.php?error=".$message);
-            exit();
-        } else {
-            $status = "success";
-            $message = "Account created successfully!";
-            header("Location: ./../index.php?error=".urlencode($message));
-            exit();
-        }
-    }
+    PDO_::initializer()->InsertNewUser($name , $email, $password);
 }
 ?>
 
@@ -110,7 +95,7 @@ html, body {
 </div>
 
 <button type="submit" class="btn btn-primary w-100 mt-2">Sign Up</button>
-<a href="login.html" class="btn btn-outline-primary w-100 mt-3">Already have an account? Sign In</a>
+<a href="login.php" class="btn btn-outline-primary w-100 mt-3">Already have an account? Sign In</a>
 
 </form>
 </div>

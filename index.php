@@ -5,7 +5,9 @@
         $_SESSION['password'] = $_SESSION['password'] ?? null;
         $_SESSION['userimage']=$_SESSION['userimage']??null;
         $_SESSION['username']=$_SESSION['username']??null;
+        $_SESSION['user_id']=$_SESSION['user_id']??null;
 
+    
     }
     include __DIR__ . "/database/create_initial_state.php";
 
@@ -15,6 +17,9 @@
     if(session_status() === PHP_SESSION_NONE){
         session_starter();
     }   
+
+    
+
 
     include_once __DIR__ . "/utility/user_emiter.php"; 
 

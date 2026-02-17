@@ -1,5 +1,8 @@
 <?php
+    if(session_status() === PHP_SESSION_NONE){
+        session_start();
 
+    }   
 class PDO_ {
 
     private static $init = null;
@@ -85,4 +88,165 @@ class PDO_ {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
     }
+
+    public function  checkSameMail(string $email): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT 1 FROM users WHERE email = ? LIMIT 1");
+        $stmt->execute([$email]);
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+    public function InsertNewUser($name ,$email , $password){
+
+        if ($name === "" || $email === "" || $password === "") {
+            $status = "error";
+            $message = "All fields are required.";
+            $_SESSION['error']=$message;
+            header("Location: error_page.php");
+            exit();
+        } else {
+            $result = $this->NewUser(['name'=>$name,'email'=>$email,'password'=> $password]); 
+            if ($result['status'] === "error") {
+                $status = "error";
+                $message = $result['message'];
+                $_SESSION['error']=$message;
+                header("Location: error_page.php");
+                exit();
+            } else {
+                $status = "success";
+                $message = "Account created successfully!";
+                header("Location: ./../index.php");
+                exit();
+            }
+        }
+    }
+
+    public function NewUser(array $data): array
+    {
+        $name=$data['name'];
+        $email=$data['email'];
+        $password=$data['password'];
+
+        if ($name === '' || $email === '' || $password === '') {
+            return [
+                'status' => 'error',
+                'message' => 'All fields are required'
+            ];
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return [
+                'status' => 'error',
+                'message' => 'Invalid email format'
+            ];
+        }
+
+        if (strlen($password) < 6) {
+            return [
+                'status' => 'error',
+                'message' => 'Password must be at least 6 characters'
+            ];
+        }
+
+        try {
+
+
+            if ($this->checkSameMail($email )) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Email already exists'
+                ];
+            }
+
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            $defaultImage = "https://res.cloudinary.com/dvpwqtobj/image/upload/v1757076286/user_xhxvc9.png";
+
+            $stmt =  $this->pdo->prepare(
+                "INSERT INTO users (name, email, password, imageURL, JoinedDate)
+                VALUES (:name, :email, :password, :imageURL, :joined)"
+            );
+
+            $stmt->execute([
+                ':name' => $name,
+                ':email' => $email,
+                ':password' => $hashedPassword,
+                ':imageURL' => $defaultImage,
+                ':joined' => date("Y-m-d")
+            ]);
+
+            $_SESSION['gmail']=$email;
+            $_SESSION['password'] = $hashedPassword;
+            $_SESSION['userimage']=$defaultImage;
+            $_SESSION['username']=$name;
+            $_SESSION['user_id']=($this->pdo->prepare("SELECT user_id FROM users WHERE email = '$email'"))->execute();
+
+            return 
+                [
+                    'error' => 'success'
+                
+                ]
+            ;
+
+        } catch (PDOException $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function checkLogin($email, $password): array
+    {
+        if ($email === '' || $password === '') {
+            return [
+                'status' => 'error',
+                'message' => 'Email and password are required'
+            ];
+        }
+
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT user_id, name, email, password, imageURL 
+                FROM users 
+                WHERE email = ? LIMIT 1"
+            );
+            $stmt->execute([$email]);
+
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$user) {
+                return [
+                    'status' => 'error',
+                    'message' => 'User not found'
+                ];
+            }
+
+            if (!password_verify($password, $user['password'])) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Invalid password'
+                ];
+            }
+
+            $_SESSION['user_id']  = $user['user_id'];
+            $_SESSION['gmail']    = $user['email'];
+            $_SESSION['username'] = $user['name'];
+            $_SESSION['userimage']= $user['imageURL'];
+
+            return [
+                'status' => 'success',
+                'message' => 'Login successful'
+            ];
+
+        } catch (PDOException $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+  
+
 }

@@ -1,7 +1,15 @@
 <?php
+    if(session_status() === PHP_SESSION_NONE){
+        session_start();
+        $_SESSION['gmail']=$_SESSION['gmail']??null;
+        $_SESSION['password'] = $_SESSION['password'] ?? null;
+        $_SESSION['userimage']=$_SESSION['userimage']??null;
+        $_SESSION['username']=$_SESSION['username']??null;
+        $_SESSION['user_id']=$_SESSION['user_id']??null;
+    }  
 
 function emit_userbox(): string{
-    if($_SESSION['gmail']){
+    if(isset($_SESSION['user_id'])){
     return '<div class="d-flex align-items-center">
         <a id="UserProfile" href="./profile/profile.php">
             <div id="UserProfileText">
