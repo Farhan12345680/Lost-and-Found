@@ -1,7 +1,6 @@
 .env
 check/ 
 vendor/
-*.png
 composer.json
 composer.lock
 composer.phar
