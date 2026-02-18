@@ -2,7 +2,12 @@
     if(session_status() === PHP_SESSION_NONE){
         session_start();
     }   
-
+    if($_SERVER['REQUEST_METHOD']==="POST"){
+        session_unset();
+        session_destroy();
+        header("Location: ./../index.php");
+        exit();
+    }
     if(!isset($_SESSION['user_id']) && $_SESSION['user_id']){
         header("Location: "."/../login/signUP.php");
         exit();
@@ -48,9 +53,10 @@
 
                         <a class=" btn btn-primary me-2" id="edit" href="update.php">Edit Profile</a>
                             
-                        <!-- <a href="chatting.html" id="chat" class="btn btn-primary me-2">Chat</a> -->
+                        <form style="display:inline" action="" method="POST">
+                        <input style="display:inline" type='submit' class="btn btn-outline-danger" id="Logout">
 
-                        <button class="btn btn-outline-danger" id="Logout">Logout</button>
+                        </form>
 
                         <hr class="my-4">
 

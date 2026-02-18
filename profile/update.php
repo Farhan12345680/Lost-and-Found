@@ -12,7 +12,7 @@ include_once __DIR__ . "/../database/create_initial_state.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     PDO_::initializer()->UpdateUser($_POST, $_FILES);
-    header("Location: profile.php");
+    header("Location: update.php");
     exit();
 }
 

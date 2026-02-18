@@ -185,15 +185,15 @@
     <div class="card-item">
         <img src="./lost.png" alt="Lost Items">
         <h3>Lost Items</h3>
-        <a href="./html/lostItems.html" class="btn btn-primary">View Lost Items</a>
-        <a href="./html/postLostitem.html" class="btn btn-outline-primary">Submit Lost Item</a>
+        <a href="./lost/lostItems.php" class="btn btn-primary">View Lost Items</a>
+        <a href="./lost/postLostitem.php" class="btn btn-outline-primary">Submit Lost Item</a>
     </div>
 
     <div class="card-item">
         <img src="./lost.png" alt="Found Items">
         <h3>Found Items</h3>
-        <a href="./html/foundItems.html" class="btn btn-primary">View Found Items</a>
-        <a href="./html/postFoundItem.html" class="btn btn-outline-primary">Submit Found Item</a>
+        <a href="./found/foundItems.php" class="btn btn-primary">View Found Items</a>
+        <a href="./found/postFoundItem.php" class="btn btn-outline-primary">Submit Found Item</a>
     </div>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

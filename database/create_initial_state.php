@@ -351,7 +351,40 @@ class PDO_ {
 
         $_SESSION['userimage']=$UploadedFilePath;
         $stmt-> execute([$UploadedFilePath , $Post['WorkTitle'] ,  $Post['Address'] ,$Post['PhoneNumber'] ,$_POST['AboutMe'],$_POST['gmail']]);
-
+        
 
     }
+
+
+    public function itemPost(array $Post , array $File ,string $type) : string{
+        $UploadedFilePath = $this->uploadImage($File);
+        $UploadedFilePath =$UploadedFilePath ?? 'https://res.cloudinary.com/dvpwqtobj/image/upload/v1769297929/profile/tdkt0y8qqiriuqgg6k9s.jpg'; 
+        
+        $StateMents = "INSERT INTO items(item_id,posterGmail , title ,keywords , description , imageURL , itemType , isResolved  ,location ,latitude , longitude)
+            values(?,? ,? ,?,?,? ,?,?,?,?,?)";
+        $stmt = $this->pdo -> prepare($StateMents);
+        $unique_id=$this->UUID_GENERATOR();
+
+        $stmt->execute([$unique_id , $Post['gmail'] , $Post['ProductTitle'] ,$Post['productKeywords'] ,$Post['About'] ,$UploadedFilePath ,$type , 'OPEN', $Post['location_name'] ,$Post['latitude'] ,$Post['longitude'] ]);
+
+        return $unique_id;
+    }
+
+    public function UUID_GENERATOR(){
+        $statements = 'SELECT UUID() as id';
+        $stmt = $this->pdo -> prepare($statements);
+        
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['id'];
+    }
+
+    public function fetchItem(string $itemID){
+        $stmt=PDO_::initializer()->pdo->prepare('SELECT * FROM items where item_id=? limit 1');
+        $stmt->execute([$itemID]); 
+        
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row;       
+    }
+
 }
