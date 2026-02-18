@@ -9,18 +9,19 @@
     }  
     include_once __DIR__ . "/../database/create_initial_state.php";
 
-    $user=PDO_::initializer()->giveUserInfo();
-    $_SESSION['userimage']=$user['imageURL'];
+
 
 function emit_userbox(): string{
     if(isset($_SESSION['user_id'])){
+    $user=PDO_::initializer()->giveUserInfo();
+    $_SESSION['userimage']=$user['imageURL'];
     return '<div class="d-flex align-items-center">
         <a id="UserProfile" href="./profile/profile.php">
             <div id="UserProfileText">
-                <p id="UserProfileName">'.$_SESSION['username']. '</p>
-                <p id="UserProfileGmail">'.$_SESSION['gmail'].'</p>
+                <p id="UserProfileName">'.htmlspecialchars($_SESSION['username']). '</p>
+                <p id="UserProfileGmail">'.htmlspecialchars($_SESSION['gmail']).'</p>
             </div>
-            <img id="UserProfileImage" src='.$_SESSION['userimage'].' alt="user">
+            <img id="UserProfileImage" src='.htmlspecialchars($_SESSION['userimage']).' alt="user">
         </a>
     </div>'; 
     }

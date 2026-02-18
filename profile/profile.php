@@ -13,8 +13,6 @@
     $user=PDO_::initializer()->giveUserInfo(); 
     $_SESSION['userimage']=$user['imageURL'];
 
-
-
 ?>
 
 <!DOCTYPE html>
