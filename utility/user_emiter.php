@@ -7,6 +7,10 @@
         $_SESSION['username']=$_SESSION['username']??null;
         $_SESSION['user_id']=$_SESSION['user_id']??null;
     }  
+    include_once __DIR__ . "/../database/create_initial_state.php";
+
+    $user=PDO_::initializer()->giveUserInfo();
+    $_SESSION['userimage']=$user['imageURL'];
 
 function emit_userbox(): string{
     if(isset($_SESSION['user_id'])){

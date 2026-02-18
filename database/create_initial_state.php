@@ -2,7 +2,17 @@
     if(session_status() === PHP_SESSION_NONE){
         session_start();
 
-    }   
+    }  
+    require_once __DIR__ . '/../vendor/autoload.php';
+ 
+    use Cloudinary\Configuration\Configuration;
+    use Cloudinary\Cloudinary;
+    use Cloudinary\Api\Upload\UploadApi;
+    use Dotenv\Dotenv;
+
+    $dotenv = Dotenv::createImmutable(__DIR__  );
+    $dotenv->load();
+
 class PDO_ {
 
     private static $init = null;
@@ -247,6 +257,101 @@ class PDO_ {
             ];
         }
     }
-  
+    
+    public function giveUserInfo(): array
+    {
 
+
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT *
+                FROM users 
+                WHERE email = ? LIMIT 1"
+            );
+            $stmt->execute([$_SESSION['gmail']]);
+
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$user) {
+                return [
+                    'status' => 'error',
+                    'message' => 'User not found'
+                ];
+            }
+
+
+        
+            return $user;
+
+
+        } catch (PDOException $e) {
+            return [
+
+            ];
+        }
+    }
+
+    public  function uploadImage(array $File){
+          if (isset($File['imageFile']) && $File['imageFile']['error'] === UPLOAD_ERR_OK) {
+              $targetDir = "uploads/";
+
+              if (!is_dir($targetDir)) {
+                  mkdir($targetDir, 0755, true);
+              }
+
+              $fileName = basename($File["imageFile"]["name"]);
+              $targetFilePath = $targetDir . $fileName;
+              $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+
+              $allowTypes = array('jpg', 'png', 'jpeg','jfif', 'gif' ,'webp' );
+
+              if (in_array($fileType, $allowTypes)) {
+                  if (move_uploaded_file($File["imageFile"]["tmp_name"], $targetFilePath)) {
+                      Configuration::instance([
+                          'cloud' => [
+                              'cloud_name' => $_ENV['CLOUDINARY_CLOUD_NAME'],
+                              'api_key'    => $_ENV['CLOUDINARY_API_KEY'],
+                              'api_secret' => $_ENV['CLOUDINARY_API_SECRET'],
+                          ],
+                          'url' => [
+                              'secure' => true
+                          ]
+                  ]);
+
+
+                  $result = (new UploadApi())->upload(
+                      $targetFilePath,
+                      [
+                          'folder' => 'profile',
+                          'overwrite' => true
+                      ]
+                  );
+                  return $result['secure_url'];
+                  } 
+              } 
+          } 
+
+
+
+
+
+          return ;
+      }
+
+    
+    
+      public function UpdateUser(array $Post ,array $File){
+
+        $UploadedFilePath = $this->uploadImage($File);
+        $UploadedFilePath =$UploadedFilePath ?? 'https://res.cloudinary.com/dvpwqtobj/image/upload/v1757076286/user_xhxvc9.png'; 
+        
+        
+        $StateMents = "UPDATE users set imageURL=? , workTitle=? ,Address=? , Phone=? ,Description=? where email =?";
+        $stmt = $this->pdo -> prepare($StateMents);
+
+        $_SESSION['userimage']=$UploadedFilePath;
+        $stmt-> execute([$UploadedFilePath , $Post['WorkTitle'] ,  $Post['Address'] ,$Post['PhoneNumber'] ,$_POST['AboutMe'],$_POST['gmail']]);
+
+
+    }
 }

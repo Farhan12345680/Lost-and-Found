@@ -7,9 +7,11 @@
         header("Location: "."/../login/signUP.php");
         exit();
     }
-
-
     
+    include_once __DIR__ . "/../database/create_initial_state.php";
+
+    $user=PDO_::initializer()->giveUserInfo(); 
+    $_SESSION['userimage']=$user['imageURL'];
 
 
 
@@ -28,7 +30,7 @@
 <body class="bg-light">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4">
-        <a class="navbar-brand fw-bold" href="../index.html">Home</a>
+        <a class="navbar-brand fw-bold" href="../index.php">Home</a>
     </nav>
 
     <div class="container mt-5">
@@ -38,14 +40,15 @@
                 <div class="card shadow border-0">
                     <div class="card-body text-center">
 
-                        <img src="../images/lost.png"
+                        <img src=<?= $user['imageURL'] ?>
                              class="rounded-circle mb-3" id="ProfileImage"
+                             
                              width="150" height="150" alt="Profile">
 
-                        <h3 class="fw-bold" id="name">John Doe</h3>
-                        <p class="text-muted" id="workTitle">Frontend Developer</p>
+                        <h3 class="fw-bold" id="name"><?= $user['name'] ?></h3>
+                        <p class="text-muted" id="workTitle"><?= $user['workTitle'] ?></p>
 
-                        <a class=" btn btn-primary me-2" id="edit" href="update.html">Edit Profile</a>
+                        <a class=" btn btn-primary me-2" id="edit" href="update.php">Edit Profile</a>
                             
                         <!-- <a href="chatting.html" id="chat" class="btn btn-primary me-2">Chat</a> -->
 
@@ -56,22 +59,22 @@
                         <div class="row text-start px-3">
                             <div class="col-md-6 mb-3">
                                 <label class="fw-bold">Email</label>
-                                <div class="text-secondary" id="Email">johndoe@example.com</div>
+                                <div class="text-secondary" id="Email"><?= $user['email'] ?></div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="fw-bold">Phone</label>
-                                <div class="text-secondary" id="Phone">+880 1712 345678</div>
+                                <div class="text-secondary" id="Phone"><?= $user['Phone'] ?></div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="fw-bold">Address</label>
-                                <div class="text-secondary" id="Address">Dhaka, Bangladesh</div>
+                                <div class="text-secondary" id="Address"><?= $user['Address'] ?></div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="fw-bold">Joined</label>
-                                <div class="text-secondary" id="JoinedDate">January 2025</div>
+                                <div class="text-secondary" id="JoinedDate"><?= $user['JoinedDate'] ?></div>
                             </div>
                         </div>
 
@@ -79,9 +82,7 @@
 
                         <h5 class="fw-bold text-start px-3">About Me</h5>
                         <p class="text-secondary px-3" id="Description">
-                            Passionate web developer with experience in HTML, CSS,
-                            JavaScript, and Bootstrap. Love building beautiful UI.
-                        </p>
+                <?= $user['Description'] ?>                        </p>
 
                     </div>
                 </div>

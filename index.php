@@ -12,7 +12,7 @@
     include __DIR__ . "/database/create_initial_state.php";
 
     PDO_::initializer();
-
+ 
 
     if(session_status() === PHP_SESSION_NONE){
         session_starter();
