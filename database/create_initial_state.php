@@ -387,4 +387,31 @@ class PDO_ {
         return $row;       
     }
 
+    public function  getMaxPageCount(string $string){
+        $stmt=PDO_::initializer()->pdo->prepare('SELECT CEIL(Count(*)/12.0) as max1 FROM items');
+        $stmt->execute([]); 
+        
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['max1'];  
+    }
+
+    public function getCurrentPage($count ,$type){
+        $count = max(1, (int)$count); 
+        $limit = 12;
+        $offset = ($count - 1) * $limit;
+
+        $stmt = PDO_::initializer()->pdo->prepare(
+            'SELECT * FROM items where itemType= :pol ORDER BY PostDate ASC LIMIT :limit OFFSET :offset'
+        );
+        $stmt->bindValue(':pol', $type );
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+        return $rows;
+    }
+
+
 }

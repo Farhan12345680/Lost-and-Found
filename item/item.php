@@ -69,7 +69,6 @@ body {
 
 <div class="row g-4">
 
-<!-- IMAGE -->
 <div class="col-md-5 position-relative">
 <img src="<?= $item['imageURL']?>" class="img-fluid item-img w-100">
 <span class="badge badge-found position-absolute top-0 start-0 m-3 px-3 py-2">
@@ -77,7 +76,6 @@ body {
 </span>
 </div>
 
-<!-- DETAILS -->
 <div class="col-md-7">
 
 <h2 class="fw-bold text-primary mb-2"><?= htmlspecialchars($item['title']) ?></h2>
@@ -95,7 +93,6 @@ body {
 <?= htmlspecialchars($item['description']) ?>
 </p>
 
-<!-- KEYWORDS -->
 <div class="mb-3">
 <?php
 $keywords = explode(" ", $item['keywords']);
@@ -120,7 +117,6 @@ foreach($keywords as $k){
 
 <hr class="my-4">
 
-<!-- MAP -->
 <h5 class="mb-2">Item Location</h5>
 <div id="map"></div>
 
