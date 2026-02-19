@@ -260,8 +260,6 @@ class PDO_ {
     
     public function giveUserInfo(): array
     {
-
-
         try {
             $stmt = $this->pdo->prepare(
                 "SELECT *
@@ -289,6 +287,20 @@ class PDO_ {
 
             ];
         }
+    }
+
+    public function giveOtherUserInfo( $string1):array{
+        if(!$string1){
+            return [];
+        }
+            $stmt = $this->pdo->prepare(
+                "SELECT *
+                FROM users 
+                WHERE email = ? LIMIT 1"
+            );
+
+            $stmt->execute([$string1]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public  function uploadImage(array $File){
@@ -414,7 +426,47 @@ class PDO_ {
         return $rows;
     }
 
-    
+    public function SearchItem(array $Post){
+        $stmt = PDO_::initializer()->pdo->prepare(
+            'SELECT * FROM items where itemType=? and  title like ? 
+                                                    and     keywords like ?
+                                                    and     description like ?
+                                                    ORDER BY PostDate ASC'
+        );
 
+        $stmt->execute(["Found","%".$Post['ProductTitle']."%" ,"%".$Post['productKeywords']."%" ,"%".$Post['About']."%"]);
+        $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $rows;
+    }
+    
+    public function addComment(string $sender_email , string $receiver_email , string $item_id ,$Post){
+        $stmt = PDO_::initializer()->pdo->prepare(
+            'Insert into messages(sender_email , receiver_email ,	item_id , message) values(?,?,?,?)'
+        );
+
+        $stmt->execute([ $sender_email , $receiver_email ,$item_id ,$Post['comment_value']  ]);
+
+
+    }
+
+    public function fetchComments(string $item_id , string $sender_email){
+        $stmt = PDO_::initializer()->pdo->prepare(
+            'SELECT * FROM messages where item_id=? and sender_email=? ORDER BY sent_at DESC'
+        );
+
+        $stmt->execute([$item_id , $sender_email]);
+        $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $rows;
+    }
+
+    public function fetchCommentsPoster(string $item_id , string $receiver_email){
+        $stmt = PDO_::initializer()->pdo->prepare(
+            'SELECT * FROM messages where item_id=? and receiver_email=? ORDER BY sent_at DESC'
+        );
+
+        $stmt->execute([$item_id , $receiver_email]);
+        $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $rows;
+    }
 
 }

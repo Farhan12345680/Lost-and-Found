@@ -106,7 +106,7 @@ body {
 
     <h3 class="mb-3"><?= $type ?> Items</h3>
 
-    <form action="foundItems.php" method="GET" class="mb-3">
+    <form action="itemlist.php?type=<?=$type?>" method="GET" class="mb-3">
         <input type="hidden" name="page" value="1">
 
         <div class="input-group">
@@ -122,13 +122,15 @@ body {
     <div class="crumbs">
         <?php
         $keywords = ['laptop','fruit','folder','id','charger','tiffin','notebook'];
-
+        
         foreach ($keywords as $k) {
             $active = ($filter === $k) ? 'active-crumb' : '';
-            echo "<a class='$active' href='foundItems.php?page=1&filter=" . urlencode($k) . "&type=".urlencode($type)."'>$k</a>";
+            ?>
+            <a class="<?=$active ?>" href="itemList.php?page=1&filter=<?=urlencode($k)?>&type=<?= urlencode($type)?>"><?=$k?></a>
+            <?php
         }
         ?>
-        <a href="foundItems.php?page=1&filter=" class="text-danger fw-bold">Clear</a>
+        <a href="itemList.php?page=1&filter=&type=<?=$type?>" class="text-danger fw-bold">Clear</a>
     </div>
 
     <div class="row g-4">
@@ -160,7 +162,7 @@ body {
     <div class="d-flex justify-content-center gap-3 my-4">
 
         <?php if ($page > 1): ?>
-            <a href="foundItems.php?page=<?= $page-1 ?>&filter=<?= urlencode($filter) ?>&type=<?= urlencode($type)?>"
+            <a href="itemList.php?page=<?= $page-1 ?>&filter=<?= urlencode($filter) ?>&type=<?= urlencode($type)?>"
                class="btn btn-outline-primary">Prev</a>
         <?php endif; ?>
 
@@ -169,7 +171,7 @@ body {
         </span>
 
   
-            <a href="foundItems.php?page=<?= $page+1 ?>&filter=<?= urlencode($filter) ?>&type=<?= urlencode($type)?>"
+            <a href="itemList.php?page=<?= $page+1 ?>&filter=<?= urlencode($filter) ?>&type=<?= urlencode($type)?>"
                class="btn btn-outline-primary">Next</a>
 
 

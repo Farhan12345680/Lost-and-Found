@@ -1,23 +1,33 @@
 <?php 
     if(session_status() === PHP_SESSION_NONE){
         session_start();
-    }   
+    }
+
     if($_SERVER['REQUEST_METHOD']==="POST"){
         session_unset();
         session_destroy();
         header("Location: ./../index.php");
         exit();
     }
-    if(!isset($_SESSION['user_id']) && $_SESSION['user_id']){
+    $other_user=$_GET['other_id']??null;   
+    
+    if(!isset($_SESSION['user_id']) && $_SESSION['user_id'] && !$other_user ){
         header("Location: "."/../login/signUP.php");
         exit();
     }
     
     include_once __DIR__ . "/../database/create_initial_state.php";
 
-    $user=PDO_::initializer()->giveUserInfo(); 
+    $user=PDO_::initializer()->giveOtherUserInfo($other_user);
+
+
+    if(!$other_user){
+        $user=PDO_::initializer()->giveUserInfo(); 
+    }
+
     $_SESSION['userimage']=$user['imageURL'];
 
+    
 ?>
 
 <!DOCTYPE html>
@@ -50,13 +60,18 @@
 
                         <h3 class="fw-bold" id="name"><?= $user['name'] ?></h3>
                         <p class="text-muted" id="workTitle"><?= $user['workTitle'] ?></p>
+                        <?php
+                            if(!$other_user){
+                                ?>
+                                <a class=" btn btn-primary me-2" id="edit" href="update.php">Edit Profile</a>
+                                    
+                                <form style="display:inline" action="" method="POST">
+                                <input style="display:inline" type='submit' value="Logout" class="btn btn-outline-danger" id="Logout">
 
-                        <a class=" btn btn-primary me-2" id="edit" href="update.php">Edit Profile</a>
-                            
-                        <form style="display:inline" action="" method="POST">
-                        <input style="display:inline" type='submit' class="btn btn-outline-danger" id="Logout">
-
-                        </form>
+                                </form>
+                                <?php
+                            }
+                        ?>
 
                         <hr class="my-4">
 
