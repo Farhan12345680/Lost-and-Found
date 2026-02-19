@@ -3,17 +3,23 @@ if(session_status() === PHP_SESSION_NONE){
     session_start();
 }   
 if(!isset($_GET['page']) || ((int)$_GET['page'])<1){
-    header("Location: lostItems.php?page=1");
+    header("Location: lostItems.php?page=1&filter=");
     exit();
 }
+
+if(!isset($_GET['filter']) || !$_GET['filter']){
+    header("Location: lostItems.php?page=1&filter=");
+    exit();
+}
+
 include_once __DIR__ . "/../database/create_initial_state.php";
-$page_count = PDO_::initializer()->getMaxPageCount('Lost');
+$page_count = PDO_::initializer()->getMaxPageCount('Lost',$_GET['filter']);
 $page = (int)$_GET['page'];
 if($page > $page_count){
     header("Location: lostItems.php?page=".$page_count);
     exit();
 }
-$arrays = PDO_::initializer()->getCurrentPage($page ,'Lost');
+$arrays = PDO_::initializer()->getCurrentPage($page ,'Lost' ,$_GET['filter']);
 ?>
 
 <!DOCTYPE html>
@@ -191,11 +197,11 @@ body {
 </div>
 <div class="container d-flex justify-content-center gap-3 my-4">
     <?php if($page > 1): ?>
-        <a href="lostItems.php?page=<?= $page-1 ?>" class="btn btn-primary">Prev</a>
+        <a href="lostItems.php?page=<?= ($page-1).'filter='.$_GET['filter'] ?>" class="btn btn-primary">Prev</a>
     <?php endif; ?>
     
     
-        <a href="lostItems.php?page=<?= $page+1 ?>" class="btn btn-primary">Next</a>
+        <a href="lostItems.php?page=<?= ($page+1).'filter='.$_GET['filter'] ?>" class="btn btn-primary">Next</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

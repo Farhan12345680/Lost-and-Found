@@ -185,14 +185,14 @@
     <div class="card-item">
         <img src="./lost.png" alt="Lost Items">
         <h3>Lost Items</h3>
-        <a href="./lost/lostItems.php" class="btn btn-primary">View Lost Items</a>
+        <a href="./item/itemList.php?type=<?= urlencode('Lost') ?>" class="btn btn-primary">View Lost Items</a>
         <a href="./lost/postLostitem.php" class="btn btn-outline-primary">Submit Lost Item</a>
     </div>
 
     <div class="card-item">
         <img src="./lost.png" alt="Found Items">
         <h3>Found Items</h3>
-        <a href="./found/foundItems.php" class="btn btn-primary">View Found Items</a>
+        <a href="./item/itemList.php" class="btn btn-primary">View Found Items</a>
         <a href="./found/postFoundItem.php" class="btn btn-outline-primary">Submit Found Item</a>
     </div>
 </section>
