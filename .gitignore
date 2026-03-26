@@ -1,7 +1,0 @@
-.env
-check/ 
-vendor/
-composer.json
-composer.lock
-composer.phar
-uploads/
